@@ -1,58 +1,169 @@
-# UI Automation Framework: Playwright + Pytest + Page Object Model
+# SauceDemo UI Automation Framework
 
-Automated UI tests for the demo e-commerce site https://www.saucedemo.com
-covering **login, product search/sorting, cart and checkout**.
+A Python-based UI automation framework for [SauceDemo](https://www.saucedemo.com/) using **Playwright, Pytest, and the Page Object Model (POM)**.
 
-## Tech stack
-| Tool | What it does |
+The framework automates key e-commerce flows and validates login behavior, product visibility, product sorting, cart operations, and checkout functionality.
+
+## Tech Stack
+
+| Technology | Purpose |
 |---|---|
-| Playwright | Controls a real browser (clicks, typing, reading text) |
-| Pytest | Finds and runs the tests, reports pass/fail |
-| Page Object Model | Design pattern: one class per web page |
-| pytest-xdist | Runs tests in parallel to save time |
-| pytest-html | Creates an HTML report |
+| Python | Test automation language |
+| Playwright | Browser automation and UI interactions |
+| Pytest | Test execution, assertions, and fixtures |
+| Page Object Model (POM) | Separates page interactions from test logic |
+| pytest-html | Generates HTML test reports |
+| pytest-xdist | Parallel test execution, if configured |
 
-## Project structure
-```
-pages/       Page Objects: locators + actions for each page (login, inventory, cart, checkout)
-tests/       Test files: only "what should happen", no locators
-test_data/   Inputs and expected messages, kept separate from test logic
-config/      Environment settings (URLs)
-conftest.py  Shared fixtures + screenshot-on-failure hook
-pytest.ini   Pytest settings and markers
+## Features
+
+- Automated login tests
+- Product visibility and inventory validation
+- Product sorting by name and price
+- Shopping cart tests
+- Checkout workflow tests
+- Reusable page objects and shared fixtures
+- Smoke and regression test markers
+- HTML test reporting
+- Screenshot capture on test failures, if configured
+
+## Project Structure
+
+```text
+project-2-saucedemo-ui-automation/
+├── config/
+│   ├── __init__.py
+│   └── settings.py
+├── pages/
+│   ├── __init__.py
+│   ├── base_page.py
+│   ├── login_page.py
+│   ├── inventory_page.py
+│   ├── cart_page.py
+│   └── checkout_page.py
+├── test_data/
+│   ├── __init__.py
+│   └── data.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_login.py
+│   ├── test_inventory.py
+│   ├── test_cart.py
+│   └── test_checkout.py
+├── conftest.py
+├── pytest.ini
+├── requirements.txt
+├── .gitignore
+└── README.md
 ```
 
-## Setup
+## Prerequisites
+
+- Python 3.10 or a compatible version for the dependencies
+- pip
+- Git
+- A supported browser installed by Playwright
+
+## Installation
+
+### 1. Clone the repository
+
 ```bash
+git clone https://github.com/AtharvaN11/project-2-saucedemo-ui-automation.git
+cd project-2-saucedemo-ui-automation
+```
+
+### 2. Create and activate a virtual environment
+
+**Windows PowerShell**
+
+```powershell
 python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+.\venv\Scripts\Activate.ps1
+```
+
+**macOS / Linux**
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3. Install dependencies and browser
+
+```bash
+python -m pip install -r requirements.txt
 playwright install chromium
 ```
 
-## Run
-```bash
-pytest                          # all tests, headless
-pytest --headed                 # watch the browser
-pytest -m smoke                 # only smoke tests
-pytest --env staging            # pick an environment
-pytest -n 4                     # 4 tests at once (xdist)
-pytest -n auto                  # use all CPU cores
-```
-Report: `reports/report.html`. Failure screenshots: `screenshots/`.
+## Running Tests
 
-## Measuring the parallel speed-up (for your resume)
-```bash
-time pytest -n 0                # serial: note the total seconds (A)
-time pytest -n 4                # parallel: note the total seconds (B)
-```
-Reduction % = (A - B) / A x 100. Run each 2-3 times and use the average.
+Run the complete test suite:
 
-## Key concepts
-- **Locator**: a way to find an element (`#user-name`, `.inventory_item`).
-- **Page Object**: a class that hides locators and exposes actions like `login()`.
-- **Fixture**: reusable setup code; tests ask for it by naming it as an argument.
-- **Parametrize**: run one test many times with different data.
-- **Marker**: a label (`smoke`, `regression`) so you can run groups of tests.
-- **Hook**: a pytest function that runs at a certain moment (we use one after each test to screenshot failures).
-- **xdist**: splits tests across worker processes; tests must be independent so they can run in any order.
+```bash
+pytest
+```
+
+Run tests with verbose output:
+
+```bash
+pytest -v
+```
+
+Run tests with the browser visible, if supported by the project configuration:
+
+```bash
+pytest --headed
+```
+
+Run smoke tests:
+
+```bash
+pytest -m smoke
+```
+
+Run regression tests:
+
+```bash
+pytest -m regression
+```
+
+Generate an HTML report, if the pytest-html plugin is installed:
+
+```bash
+pytest --html=reports/report.html --self-contained-html
+```
+
+If the `reports` directory does not exist, create it before running the command:
+
+```powershell
+New-Item -ItemType Directory -Force reports
+```
+
+## Test Reports and Screenshots
+
+- **HTML report:** `reports/report.html`, when generated using the command above.
+- **Failure screenshots:** `screenshots/`, if screenshot capture is configured in the test hooks.
+
+Generated reports and screenshots may be excluded from Git using `.gitignore`.
+
+## Framework Design
+
+- **Page Object Model:** Each page class encapsulates relevant locators and page actions.
+- **Fixtures:** Shared setup and browser/page resources are provided through `conftest.py`.
+- **Parametrization:** Runs the same test against multiple data inputs.
+- **Markers:** Organizes tests into smoke and regression groups.
+- **Assertions:** Checks that actual UI behavior matches expected results.
+
+## Future Improvements
+
+- Add cross-browser execution.
+- Integrate the test suite into a CI/CD pipeline.
+- Add structured logging and richer failure diagnostics.
+- Configure parallel execution after verifying test independence.
+
+## Author
+
+**Atharva Prakash Nandgaonkar**
+
+GitHub: [AtharvaN11](https://github.com/AtharvaN11)
