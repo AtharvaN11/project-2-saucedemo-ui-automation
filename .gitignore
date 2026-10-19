@@ -15,7 +15,7 @@ env/
 .env.*
 
 # Test artifacts
-screenshots/*
+
 reports/*
 !reports/.gitkeep
 
